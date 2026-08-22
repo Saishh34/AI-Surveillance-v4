@@ -113,6 +113,7 @@ class CameraWorker(threading.Thread):
             "previous_time": time.time(),
             "video_writer": None,
             "recording": False,
+            "intrusion": False,
             "last_detection_time": 0,
             "first_detection_time": 0,
             "snapshot1_taken": False,
@@ -167,6 +168,7 @@ class CameraWorker(threading.Thread):
             cv2.rectangle(display, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
         person_count = 0
+        state["intrusion"] = False
 
         if motion_detected:
             display, person_count = self._run_detection(frame, display, state)
@@ -184,6 +186,11 @@ class CameraWorker(threading.Thread):
         self.shared_frames[self.name] = {
             "display": display,
             "heatmap": render_heatmap(state["heatmap"]),
+            "fps": fps,
+            "motion_detected": motion_detected,
+            "person_count": person_count,
+            "intrusion": state["intrusion"] if motion_detected else False,
+            "recording": state["recording"],
         }
 
     @staticmethod
@@ -213,6 +220,8 @@ class CameraWorker(threading.Thread):
 
             if self._process_track_box(box, display, frame, state):
                 intrusion = True
+
+        state["intrusion"] = intrusion
 
         self._handle_intrusion(display, intrusion, frame, person_count, state)
 
