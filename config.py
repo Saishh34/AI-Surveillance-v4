@@ -22,18 +22,8 @@ CAMERAS = [
         "zone": None,
     },
     {
-
-
-
-
-
-
-
-
-
-
-
-
+        "name": "Laptop Camera",
+        "index": 1,
         "zone": None,
     },
 ]
