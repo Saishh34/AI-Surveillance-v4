@@ -2,6 +2,7 @@ from flask import Flask, jsonify, Response
 from flask_cors import CORS
 from shared_state import shared_frames
 import cv2
+import activity_log
 
 app = Flask(__name__)
 CORS(app)
@@ -64,6 +65,11 @@ def stream(camera_name):
         mimetype="multipart/x-mixed-replace; boundary=frame",
     )
 
+@app.get("/api/events")
+def events():
+    return jsonify(
+        activity_log.get_recent_events(20)
+    )
 
 def start_api():
     app.run(host="127.0.0.1", port=5000, debug=False, use_reloader=False)

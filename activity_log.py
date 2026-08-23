@@ -155,3 +155,31 @@ def check_anomaly(camera_name, when=None):
         return True, reason, baseline_avg, days_monitored
 
     return False, "within normal range", baseline_avg, days_monitored
+
+def get_recent_events(limit=20):
+    """
+    Returns the most recent intrusion-zone events.
+    """
+    with _connect() as conn:
+        cur = conn.execute(
+            """
+            SELECT id, camera_name, event_date, hour, timestamp
+            FROM events
+            ORDER BY timestamp DESC
+            LIMIT ?
+            """,
+            (limit,)
+        )
+
+        rows = cur.fetchall()
+
+    return [
+        {
+            "id": row[0],
+            "camera_name": row[1],
+            "event_date": row[2],
+            "hour": row[3],
+            "timestamp": row[4],
+        }
+        for row in rows
+    ]

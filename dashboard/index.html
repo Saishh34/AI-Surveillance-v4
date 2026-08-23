@@ -3,46 +3,1058 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>AI Surveillance Dashboard</title>
-</head>
 
-<body>
-    <h1>AI Surveillance Dashboard</h1>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
 
-    <div id="cameras">
-        Loading cameras...
-    </div>
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #0b0f14;
+            color: #f5f7fa;
+        }
 
-    <script>
-        const API_BASE = "http://127.0.0.1:5000";
+        header {
+            padding: 20px 28px;
+            border-bottom: 1px solid #202832;
+            background: #11161d;
+        }
 
-        async function loadCameras() {
-            const response = await fetch(`${API_BASE}/api/cameras`);
-            const cameras = await response.json();
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
 
-            const container = document.getElementById("cameras");
+        header p {
+            margin: 6px 0 0;
+            color: #8f9baa;
+            font-size: 14px;
+        }
 
-            container.innerHTML = "";
+        #system-status {
+            margin-top: 12px;
+            font-size: 13px;
+        }
 
-            for (const [name, camera] of Object.entries(cameras)) {
-                const card = document.createElement("div");
+        .status-dot {
+            display: inline-block;
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            margin-right: 6px;
+            background: #777;
+        }
 
-                card.innerHTML = `
-                    <h2>${name}</h2>
-                    <p>Status: ${camera.online ? "Online" : "Offline"}</p>
-                    <p>FPS: ${camera.fps ?? 0}</p>
-                    <p>Motion: ${camera.motion_detected ? "Detected" : "None"}</p>
-                    <p>Persons: ${camera.person_count ?? 0}</p>
-                    <p>Intrusion: ${camera.intrusion ? "YES" : "No"}</p>
-                    <p>Recording: ${camera.recording ? "YES" : "No"}</p>
-                `;
+        .status-dot.online {
+            background: #20c997;
+        }
 
-                container.appendChild(card);
+        /* =========================
+           SYSTEM SUMMARY
+           ========================= */
+
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .summary-card {
+            padding: 16px;
+            border: 1px solid #252d36;
+            border-radius: 10px;
+            background: #181e26;
+        }
+
+        .summary-label {
+            color: #8f9baa;
+            font-size: 12px;
+            margin-bottom: 6px;
+        }
+
+        .summary-value {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .summary-value.safe {
+            color: #20c997;
+        }
+
+        .summary-value.alert {
+            color: #ff6b6b;
+        }
+
+        .summary-value.recording {
+            color: #ff4d4d;
+        }
+
+        /* =========================
+           DASHBOARD
+           ========================= */
+
+        .dashboard {
+            padding: 24px;
+        }
+
+        #cameras {
+            display: grid;
+            grid-template-columns: repeat(
+                auto-fit,
+                minmax(420px, 1fr)
+            );
+            gap: 20px;
+        }
+
+        /* =========================
+           CAMERA CARD
+           ========================= */
+
+        .camera-card {
+            overflow: hidden;
+            border: 1px solid #252d36;
+            border-radius: 12px;
+            background: #11161d;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+        }
+
+        .camera-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 16px;
+            border-bottom: 1px solid #252d36;
+        }
+
+        .camera-name {
+            margin: 0;
+            font-size: 17px;
+        }
+
+        .online {
+            color: #20c997;
+            font-size: 13px;
+        }
+
+        .offline {
+            color: #ff6b6b;
+            font-size: 13px;
+        }
+
+        /* =========================
+           LIVE FEED
+           ========================= */
+
+        .feed {
+            width: 100%;
+            display: block;
+            background: #05070a;
+            aspect-ratio: 4 / 3;
+            object-fit: contain;
+        }
+
+        /* =========================
+           CAMERA METRICS
+           ========================= */
+
+        .camera-body {
+            padding: 16px;
+        }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .metric {
+            padding: 12px;
+            border-radius: 8px;
+            background: #181e26;
+        }
+
+        .metric-label {
+            color: #8f9baa;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .metric-value {
+            font-size: 17px;
+            font-weight: bold;
+        }
+
+        .alert {
+            color: #ff6b6b;
+        }
+
+        .safe {
+            color: #20c997;
+        }
+
+        .recording {
+            color: #ff4d4d;
+        }
+
+        /* =========================
+           RECENT EVENTS
+           ========================= */
+
+        .events-panel {
+            margin-top: 24px;
+            border: 1px solid #252d36;
+            border-radius: 12px;
+            background: #11161d;
+            overflow: hidden;
+        }
+
+        .events-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 18px;
+            border-bottom: 1px solid #252d36;
+        }
+
+        .events-header h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        #events-status {
+            color: #20c997;
+            font-size: 13px;
+        }
+
+        #events-list {
+            padding: 8px;
+            max-height: 420px;
+            overflow-y: auto;
+        }
+
+        .event {
+            display: grid;
+            grid-template-columns: 90px 1fr;
+            gap: 14px;
+            padding: 14px 10px;
+            border-bottom: 1px solid #202832;
+        }
+
+        .event:last-child {
+            border-bottom: none;
+        }
+
+        .event-time {
+            color: #8f9baa;
+            font-size: 12px;
+            padding-top: 2px;
+        }
+
+        .event-title {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .event-camera {
+            margin-top: 4px;
+            color: #8f9baa;
+            font-size: 12px;
+        }
+
+        .event.alert-event .event-title {
+            color: #ff6b6b;
+        }
+
+        .event.safe-event .event-title {
+            color: #20c997;
+        }
+
+        .events-empty {
+            padding: 25px;
+            text-align: center;
+            color: #8f9baa;
+        }
+
+        /* =========================
+           ERROR
+           ========================= */
+
+        .error {
+            padding: 30px;
+            text-align: center;
+            color: #ff6b6b;
+        }
+
+        /* =========================
+           RESPONSIVE
+           ========================= */
+
+        @media (max-width: 800px) {
+            .summary {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
 
-        loadCameras();
-        setInterval(loadCameras, 1000);
-    </script>
+        @media (max-width: 600px) {
+            .dashboard {
+                padding: 12px;
+            }
+
+            #cameras {
+                grid-template-columns: 1fr;
+            }
+
+            .summary {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .event {
+                grid-template-columns: 1fr;
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+
+    <h1>AI Surveillance Dashboard</h1>
+
+    <p>
+        Real-time multi-camera monitoring
+    </p>
+
+    <div id="system-status">
+        <span class="status-dot"></span>
+        Connecting to surveillance API...
+    </div>
+
+    <!-- SYSTEM SUMMARY -->
+
+    <div class="summary">
+
+        <div class="summary-card">
+            <div class="summary-label">
+                Cameras Online
+            </div>
+
+            <div id="online-count" class="summary-value">
+                0/0
+            </div>
+        </div>
+
+
+        <div class="summary-card">
+            <div class="summary-label">
+                People Detected
+            </div>
+
+            <div id="people-count" class="summary-value">
+                0
+            </div>
+        </div>
+
+
+        <div class="summary-card">
+            <div class="summary-label">
+                Active Intrusions
+            </div>
+
+            <div id="intrusion-count"
+                 class="summary-value safe">
+                0
+            </div>
+        </div>
+
+
+        <div class="summary-card">
+            <div class="summary-label">
+                Recording
+            </div>
+
+            <div id="recording-count"
+                 class="summary-value">
+                0
+            </div>
+        </div>
+
+    </div>
+
+</header>
+
+
+<main class="dashboard">
+
+    <!-- CAMERA CARDS -->
+
+    <div id="cameras"></div>
+
+
+    <!-- RECENT EVENTS -->
+
+    <section class="events-panel">
+
+        <div class="events-header">
+
+            <h2>
+                Recent Events
+            </h2>
+
+            <span id="events-status">
+                Live
+            </span>
+
+        </div>
+
+
+        <div id="events-list">
+
+            <div class="events-empty">
+                Loading events...
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<script>
+
+    const API_BASE =
+        "http://127.0.0.1:5000";
+
+
+    /* =========================
+       CAMERA STREAM URL
+       ========================= */
+
+    function cameraUrl(name) {
+
+        return `${API_BASE}/api/stream/${encodeURIComponent(name)}`;
+
+    }
+
+
+    /* =========================
+       CREATE CAMERA METRIC
+       ========================= */
+
+    function createMetric(
+        label,
+        value,
+        className = ""
+    ) {
+
+        return `
+            <div class="metric">
+
+                <div class="metric-label">
+                    ${label}
+                </div>
+
+                <div class="metric-value ${className}">
+                    ${value}
+                </div>
+
+            </div>
+        `;
+
+    }
+
+
+    /* =========================
+       UPDATE SYSTEM SUMMARY
+       ========================= */
+
+    function updateSummary(cameras) {
+
+        const entries =
+            Object.entries(cameras);
+
+
+        const onlineCount =
+            entries.filter(
+                ([, camera]) => camera.online
+            ).length;
+
+
+        const peopleCount =
+            entries.reduce(
+                (total, [, camera]) => {
+
+                    return total +
+                        (camera.person_count || 0);
+
+                },
+                0
+            );
+
+
+        const intrusionCount =
+            entries.filter(
+                ([, camera]) => camera.intrusion
+            ).length;
+
+
+        const recordingCount =
+            entries.filter(
+                ([, camera]) => camera.recording
+            ).length;
+
+
+        document.getElementById(
+            "online-count"
+        ).textContent =
+            `${onlineCount}/${entries.length}`;
+
+
+        document.getElementById(
+            "people-count"
+        ).textContent =
+            peopleCount;
+
+
+        const intrusionElement =
+            document.getElementById(
+                "intrusion-count"
+            );
+
+
+        intrusionElement.textContent =
+            intrusionCount;
+
+
+        intrusionElement.className =
+            intrusionCount > 0
+                ? "summary-value alert"
+                : "summary-value safe";
+
+
+        const recordingElement =
+            document.getElementById(
+                "recording-count"
+            );
+
+
+        recordingElement.textContent =
+            recordingCount;
+
+
+        recordingElement.className =
+            recordingCount > 0
+                ? "summary-value recording"
+                : "summary-value safe";
+
+    }
+
+
+    /* =========================
+       LOAD CAMERA DATA
+       ========================= */
+
+    async function loadCameras() {
+
+        const container =
+            document.getElementById(
+                "cameras"
+            );
+
+
+        const systemStatus =
+            document.getElementById(
+                "system-status"
+            );
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_BASE}/api/cameras`
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "API request failed"
+                );
+
+            }
+
+
+            const cameras =
+                await response.json();
+
+
+            /* Update summary */
+
+            updateSummary(cameras);
+
+
+            /* API online */
+
+            systemStatus.innerHTML = `
+                <span class="status-dot online"></span>
+                Surveillance API Online
+            `;
+
+
+            container.innerHTML = "";
+
+
+            const entries =
+                Object.entries(cameras);
+
+
+            if (entries.length === 0) {
+
+                container.innerHTML = `
+                    <div class="error">
+                        No cameras detected.
+                    </div>
+                `;
+
+                return;
+            }
+
+
+            /* =========================
+               BUILD CAMERA CARDS
+               ========================= */
+
+            for (
+                const [name, camera]
+                of entries
+            ) {
+
+                const card =
+                    document.createElement(
+                        "section"
+                    );
+
+
+                card.className =
+                    "camera-card";
+
+
+                /* OFFLINE CAMERA */
+
+                if (!camera.online) {
+
+                    card.innerHTML = `
+
+                        <div class="camera-header">
+
+                            <h2 class="camera-name">
+                                ${name}
+                            </h2>
+
+                            <span class="offline">
+                                ● Offline
+                            </span>
+
+                        </div>
+
+
+                        <div class="error">
+
+                            ${camera.error ||
+                            "Camera unavailable"}
+
+                        </div>
+
+                    `;
+
+
+                    container.appendChild(card);
+
+                    continue;
+                }
+
+
+                /* CAMERA STATES */
+
+                const intrusionClass =
+                    camera.intrusion
+                        ? "alert"
+                        : "safe";
+
+
+                const intrusionText =
+                    camera.intrusion
+                        ? "DETECTED"
+                        : "Clear";
+
+
+                const recordingClass =
+                    camera.recording
+                        ? "recording"
+                        : "safe";
+
+
+                const recordingText =
+                    camera.recording
+                        ? "RECORDING"
+                        : "Idle";
+
+
+                const motionClass =
+                    camera.motion_detected
+                        ? "alert"
+                        : "safe";
+
+
+                const motionText =
+                    camera.motion_detected
+                        ? "Detected"
+                        : "None";
+
+
+                /* CAMERA CARD */
+
+                card.innerHTML = `
+
+                    <div class="camera-header">
+
+                        <h2 class="camera-name">
+                            ${name}
+                        </h2>
+
+                        <span class="online">
+                            ● Online
+                        </span>
+
+                    </div>
+
+
+                    <img
+                        class="feed"
+                        src="${cameraUrl(name)}"
+                        alt="${name} live feed"
+                    >
+
+
+                    <div class="camera-body">
+
+                        <div class="metrics">
+
+                            ${createMetric(
+                                "FPS",
+                                Number(
+                                    camera.fps || 0
+                                ).toFixed(1)
+                            )}
+
+
+                            ${createMetric(
+                                "Persons",
+                                camera.person_count ?? 0
+                            )}
+
+
+                            ${createMetric(
+                                "Motion",
+                                motionText,
+                                motionClass
+                            )}
+
+
+                            ${createMetric(
+                                "Intrusion",
+                                intrusionText,
+                                intrusionClass
+                            )}
+
+
+                            ${createMetric(
+                                "Recording",
+                                recordingText,
+                                recordingClass
+                            )}
+
+
+                            ${createMetric(
+                                "Camera",
+                                "ONLINE",
+                                "safe"
+                            )}
+
+                        </div>
+
+                    </div>
+
+                `;
+
+
+                container.appendChild(card);
+
+            }
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Surveillance API error:",
+                error
+            );
+
+
+            systemStatus.innerHTML = `
+                <span class="status-dot"></span>
+                Surveillance API Offline
+            `;
+
+
+            container.innerHTML = `
+
+                <div class="error">
+
+                    Unable to connect to
+                    the surveillance API.
+
+                    <br><br>
+
+                    Make sure
+                    <strong>
+                        multi_camera_main.py
+                    </strong>
+                    is running.
+
+                </div>
+
+            `;
+
+        }
+
+    }
+
+
+    /* =========================
+       LOAD REAL EVENTS
+       ========================= */
+
+    async function loadEvents() {
+
+        const eventsList =
+            document.getElementById(
+                "events-list"
+            );
+
+
+        const eventsStatus =
+            document.getElementById(
+                "events-status"
+            );
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_BASE}/api/events`
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Events API failed"
+                );
+
+            }
+
+
+            const events =
+                await response.json();
+
+
+            eventsStatus.textContent =
+                "Live";
+
+
+            eventsStatus.style.color =
+                "#20c997";
+
+
+            /* No events */
+
+            if (events.length === 0) {
+
+                eventsList.innerHTML = `
+
+                    <div class="events-empty">
+
+                        No intrusion events recorded.
+
+                    </div>
+
+                `;
+
+                return;
+            }
+
+
+            eventsList.innerHTML = "";
+
+
+            /* =========================
+               BUILD EVENT LIST
+               ========================= */
+
+            for (const event of events) {
+
+                const eventTime =
+                    new Date(
+                        event.timestamp * 1000
+                    );
+
+
+                const time =
+                    eventTime.toLocaleTimeString(
+                        [],
+                        {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            second: "2-digit"
+                        }
+                    );
+
+
+                const date =
+                    eventTime.toLocaleDateString(
+                        [],
+                        {
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "numeric"
+                        }
+                    );
+
+
+                const eventElement =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                eventElement.className =
+                    "event alert-event";
+
+
+                eventElement.innerHTML = `
+
+                    <div class="event-time">
+
+                        ${time}
+
+                        <br>
+
+                        ${date}
+
+                    </div>
+
+
+                    <div>
+
+                        <div class="event-title">
+
+                            🚨 Intrusion Zone Entry
+
+                        </div>
+
+
+                        <div class="event-camera">
+
+                            Camera:
+                            ${event.camera_name}
+
+                        </div>
+
+                    </div>
+
+                `;
+
+
+                eventsList.appendChild(
+                    eventElement
+                );
+
+            }
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Events API error:",
+                error
+            );
+
+
+            eventsStatus.textContent =
+                "Offline";
+
+
+            eventsStatus.style.color =
+                "#ff6b6b";
+
+
+            eventsList.innerHTML = `
+
+                <div class="events-empty">
+
+                    Unable to load event history.
+
+                    <br><br>
+
+                    Make sure the surveillance
+                    API is running.
+
+                </div>
+
+            `;
+
+        }
+
+    }
+
+
+    /* =========================
+       INITIAL LOAD
+       ========================= */
+
+    loadCameras();
+
+    loadEvents();
+
+
+    /* =========================
+       AUTO REFRESH
+       ========================= */
+
+    setInterval(
+        loadCameras,
+        1000
+    );
+
+
+    setInterval(
+        loadEvents,
+        2000
+    );
+
+</script>
+
 </body>
 </html>

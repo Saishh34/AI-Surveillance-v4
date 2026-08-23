@@ -17,13 +17,23 @@ load_dotenv()
 # ZONE_X1..ZONE_Y2 intrusion zone defined below for that camera.
 CAMERAS = [
     {
-        "name": "Laptop Camera",
+        "name": "External Camera (Intex)",
         "index": 0,
         "zone": None,
     },
     {
-        "name": "External Camera (Intex)",
-        "index": 1,
+
+
+
+
+
+
+
+
+
+
+
+
         "zone": None,
     },
 ]
