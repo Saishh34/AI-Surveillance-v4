@@ -6,6 +6,7 @@ import config
 import activity_log
 from camera_worker import CameraWorker
 from grid_display import build_grid
+from shared_state import shared_frames
 
 WINDOW_NAME = "AI Surveillance - Multi Camera"
 
@@ -13,7 +14,7 @@ WINDOW_NAME = "AI Surveillance - Multi Camera"
 def main():
     activity_log.init_db()
 
-    shared_frames = {}
+    
     stop_event = threading.Event()
 
     workers = [
