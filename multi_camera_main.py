@@ -7,6 +7,7 @@ import activity_log
 from camera_worker import CameraWorker
 from grid_display import build_grid
 from shared_state import shared_frames
+from api import start_api
 
 WINDOW_NAME = "AI Surveillance - Multi Camera"
 
@@ -16,6 +17,9 @@ def main():
 
     
     stop_event = threading.Event()
+
+    api_thread = threading.Thread(target=start_api, daemon=True)
+    api_thread.start()
 
     workers = [
         CameraWorker(
