@@ -1,6 +1,7 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, Response
 from flask_cors import CORS
 from shared_state import shared_frames
+import cv2
 
 app = Flask(__name__)
 CORS(app)
@@ -34,6 +35,35 @@ def cameras():
             }
 
     return jsonify(result)
+
+def generate_stream(camera_name):
+    while True:
+        frames = shared_frames.get(camera_name)
+
+        if not frames or "display" not in frames:
+            continue
+
+        frame = frames["display"]
+
+        success, buffer = cv2.imencode(".jpg", frame)
+
+        if not success:
+            continue
+
+        yield (
+            b"--frame\r\n"
+            b"Content-Type: image/jpeg\r\n\r\n"
+            + buffer.tobytes()
+            + b"\r\n"
+        )
+
+@app.get("/api/stream/<camera_name>")
+def stream(camera_name):
+    return Response(
+        generate_stream(camera_name),
+        mimetype="multipart/x-mixed-replace; boundary=frame",
+    )
+
 
 def start_api():
     app.run(host="127.0.0.1", port=5000, debug=False, use_reloader=False)
