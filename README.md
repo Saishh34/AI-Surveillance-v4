@@ -38,24 +38,106 @@ The architecture is designed so that the camera-processing layer, API layer, act
 
 ---
 
-## ✨ Key Features
+## 🏗️ System Architecture
 
-- 🎥 **Multi-Camera Surveillance**
-- 🤖 **YOLO-Based Person Detection**
-- 🎯 **Intrusion Zone Detection**
-- 🚶 **Loitering Detection**
-- 🧭 **Object Tracking**
-- 🔴 **Automatic Video Recording**
-- 📸 **Snapshot Capture**
-- 📱 **Telegram Security Alerts**
-- 📊 **Real-Time Web Dashboard**
-- 🗃️ **Persistent Activity Logging**
-- 🔥 **Activity Heatmap**
-- ⏱️ **Time-of-Day Anomaly Detection**
-- 🖥️ **Live Camera Monitoring**
-- ⚡ **Real-Time Camera Metrics**
+```mermaid
+flowchart TB
 
+    CAM["🎥 Camera Sources<br/>Laptop Camera • External Camera"]
+
+    subgraph CV["🧠 Computer Vision Pipeline"]
+        CAP["Frame Capture"]
+        MOT["Motion Detection"]
+        YOLO["YOLO Person Detection"]
+        TRACK["Object Tracking"]
+        ZONE["Intrusion Zone Analysis"]
+        LOITER["Loitering Detection"]
+        HEAT["Heatmap Generation"]
+    end
+
+    subgraph EVENTS["🚨 Event Processing"]
+        ENGINE["Event Detection Engine"]
+        RECORD["🎬 Automated Recording"]
+        SNAP["📸 Snapshot Capture"]
+        ALERT["📱 Telegram Alerts"]
+        LOG["🗃️ Activity Logger"]
+    end
+
+    subgraph BACKEND["⚙️ Backend"]
+        STATE["Shared Camera State"]
+        API["Flask REST API"]
+        STREAM["Live MJPEG Streams"]
+        DB[("SQLite Database")]
+    end
+
+    subgraph DASHBOARD["🖥️ Web Dashboard"]
+        UI["Real-Time Monitoring UI"]
+        STATUS["Camera & Detection Status"]
+        EVENTS_UI["Event History"]
+        FULL["Fullscreen Camera View"]
+    end
+
+    CAM --> CAP
+
+    CAP --> MOT
+    CAP --> YOLO
+
+    YOLO --> TRACK
+
+    TRACK --> ZONE
+    TRACK --> LOITER
+    TRACK --> HEAT
+
+    MOT --> ENGINE
+    ZONE --> ENGINE
+    LOITER --> ENGINE
+
+    ENGINE --> RECORD
+    ENGINE --> SNAP
+    ENGINE --> ALERT
+    ENGINE --> LOG
+
+    LOG --> DB
+
+    MOT --> STATE
+    YOLO --> STATE
+    TRACK --> STATE
+    ZONE --> STATE
+    LOITER --> STATE
+    RECORD --> STATE
+
+    STATE --> API
+    STATE --> STREAM
+
+    API --> UI
+    STREAM --> UI
+
+    UI --> STATUS
+    UI --> EVENTS_UI
+    UI --> FULL
+```
+
+### 🔄 Processing Pipeline
+
+**Camera → Frame Capture → AI Detection → Tracking → Event Analysis → Response → Storage → API → Dashboard**
+
+| Stage | Function |
+|---|---|
+| 🎥 Capture | Acquire frames from configured cameras |
+| 🧠 Detection | Detect people using YOLO |
+| 🎯 Tracking | Track detected people across frames |
+| 🚨 Intrusion | Detect entry into configured restricted zones |
+| 🚶 Loitering | Detect prolonged presence |
+| 🔥 Heatmap | Visualize activity distribution |
+| 🎬 Recording | Automatically record relevant events |
+| 📸 Snapshot | Capture detection snapshots |
+| 📱 Alerting | Send Telegram notifications |
+| 🗃️ Logging | Persist surveillance events in SQLite |
+| ⚙️ API | Expose camera status, events and streams |
+| 🖥️ Dashboard | Display real-time surveillance information |
 ---
+
+
 
 ## 🧠 Core Technologies
 
