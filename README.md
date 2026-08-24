@@ -123,20 +123,3 @@ flowchart LR
 | 🖥️ Dashboard | Display real-time surveillance information |
 ---
 
-
-
-## 🧠 Core Technologies
-
-| Category | Technology |
-|---|---|
-| Programming Language | Python |
-| Computer Vision | OpenCV |
-| Object Detection | Ultralytics YOLO |
-| Object Tracking | ByteTrack |
-| Backend API | Flask |
-| Database | SQLite |
-| Frontend | HTML, CSS, JavaScript |
-| Notifications | Telegram Bot API |
-| Version Control | Git / GitHub |
-
----
