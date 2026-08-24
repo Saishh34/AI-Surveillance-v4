@@ -1,3 +1,17 @@
+<p align="center">
+  <img src="ai-surveillance-banner.png" alt="AI Surveillance System">
+</p>
+
+<p align="center">
+  <b>Real-time AI-powered multi-camera surveillance system</b>
+</p>
+
+<p align="center">
+  Detect • Track • Analyze • Alert • Record
+</p>
+
+---
+
 # AI Surveillance System
 
 > Real-time AI-powered multi-camera surveillance system with person detection, intrusion monitoring, loitering detection, automated recording, Telegram alerts, activity logging, and a web-based monitoring dashboard.
