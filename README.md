@@ -220,9 +220,17 @@ Configure the camera sources, detection zones, and notification settings using t
 
 ### 6. Run the Application
 
-Start the surveillance system using the appropriate Python entry point from the project.
+Start the surveillance system using:
+
+```bash
+python ui.py
+```
 
 ### 7. Open the Dashboard
 
-Once the backend is running, open the web dashboard in your browser to monitor connected cameras, detections, events, recordings, and system status.
+Once the application is running, open the dashboard at:
+
+```text
+http://127.0.0.1:5000
+```
 ---
