@@ -12,32 +12,6 @@
 
 ---
 
-### `> system_boot`
-
-```text
-┌──────────────────────────────────────────────────────────────┐
-│                 AI SURVEILLANCE SYSTEM                      │
-├──────────────────────────────────────────────────────────────┤
-│                                                              │
-│  [✓] Camera subsystem ................. ONLINE              │
-│  [✓] OpenCV frame capture ............. ONLINE              │
-│  [✓] YOLO detection engine ............ ONLINE              │
-│  [✓] Object tracking ................. ONLINE              │
-│  [✓] Intrusion monitoring ............ ACTIVE               │
-│  [✓] Loitering detection ............. ACTIVE               │
-│  [✓] Event recording ................. READY                │
-│  [✓] Telegram alert service .......... READY                │
-│  [✓] SQLite activity database ........ CONNECTED            │
-│  [✓] Flask API ....................... ONLINE               │
-│                                                              │
-├──────────────────────────────────────────────────────────────┤
-│  SYSTEM STATUS: ● OPERATIONAL                               │
-│  MODE: LOCAL COMPUTER VISION                                │
-│  CAMERAS: MULTI-SOURCE                                      │
-└──────────────────────────────────────────────────────────────┘
-```
-
-
 ## 🚨 Overview
 
 AI Surveillance System is a real-time computer vision platform designed to monitor multiple camera feeds and automatically identify potentially suspicious activity.
