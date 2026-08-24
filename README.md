@@ -178,3 +178,51 @@ The web dashboard provides real-time visibility into connected cameras, AI detec
 | 📡 Video Streaming | MJPEG |
 | 📊 Data Visualization | Custom Dashboard / Heatmap |
 | 🔧 Configuration | YAML |
+
+
+
+---
+
+## ⚙️ Installation & Setup
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/Saishh34/AI-Surveillance-v4.git
+cd AI-Surveillance-v4
+```
+
+### 2. Create a Virtual Environment
+
+```bash
+python -m venv venv
+```
+
+### 3. Activate the Environment
+
+**Windows:**
+
+```bash
+venv\Scripts\activate
+
+```
+
+### 4. Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 5. Configure the System
+
+Configure the camera sources, detection zones, and notification settings using the project's configuration files.
+
+
+### 6. Run the Application
+
+Start the surveillance system using the appropriate Python entry point from the project.
+
+### 7. Open the Dashboard
+
+Once the backend is running, open the web dashboard in your browser to monitor connected cameras, detections, events, recordings, and system status.
+---
