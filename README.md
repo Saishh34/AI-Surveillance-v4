@@ -234,3 +234,27 @@ Once the application is running, open the dashboard at:
 http://127.0.0.1:5000
 ```
 ---
+
+## 🔧 Configuration
+
+The main system settings are managed through `config.py`.
+
+### 📷 Camera Configuration
+
+Each camera is defined using a name, camera index, and optional intrusion zone:
+
+```python
+CAMERAS = [
+    {
+        "name": "External Camera (Intex)",
+        "index": 0,
+        "zone": None,
+    },
+    {
+        "name": "Laptop Camera",
+        "index": 1,
+        "zone": None,
+    },
+]
+
+```
