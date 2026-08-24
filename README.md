@@ -159,3 +159,22 @@ The web dashboard provides real-time visibility into connected cameras, AI detec
 <p align="center">
   <img src="dashboard/Dark AI Surveillance Dashboard.png" alt="Dark AI Surveillance Dashboard" width="900">
 </p>
+
+
+---
+
+## 🛠️ Technology Stack
+
+| Category | Technology |
+|---|---|
+| 🐍 Programming Language | Python |
+| 🧠 Computer Vision | OpenCV |
+| 🤖 Object Detection | YOLO |
+| 🎯 Object Tracking | ByteTrack |
+| ⚙️ Backend API | Flask |
+| 🗃️ Database | SQLite |
+| 📱 Notifications | Telegram Bot API |
+| 🖥️ Dashboard | HTML, CSS, JavaScript |
+| 📡 Video Streaming | MJPEG |
+| 📊 Data Visualization | Custom Dashboard / Heatmap |
+| 🔧 Configuration | YAML |
