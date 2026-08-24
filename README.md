@@ -123,3 +123,39 @@ flowchart LR
 | 🖥️ Dashboard | Display real-time surveillance information |
 ---
 
+
+---
+
+## 🖥️ Dashboard
+
+The web dashboard provides real-time visibility into connected cameras, AI detections, motion status, intrusion events, recording status, and surveillance activity.
+
+### Main Dashboard
+
+<p align="center">
+  <img src="dashboard/dashboard.png" alt="AI Surveillance Dashboard" width="900">
+</p>
+
+### Dual-Camera Monitoring
+
+<p align="center">
+  <img src="dashboard/Dual-Camera AI Surveillance Dashboard.png" alt="Dual-Camera AI Surveillance Dashboard" width="900">
+</p>
+
+### Detection & Heatmap
+
+<p align="center">
+  <img src="dashboard/detection-heatmap.png" alt="Detection Heatmap" width="900">
+</p>
+
+### Surveillance Events
+
+<p align="center">
+  <img src="dashboard/events.png" alt="Surveillance Events" width="900">
+</p>
+
+### Dark Dashboard View
+
+<p align="center">
+  <img src="dashboard/Dark AI Surveillance Dashboard.png" alt="Dark AI Surveillance Dashboard" width="900">
+</p>
