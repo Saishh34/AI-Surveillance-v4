@@ -40,80 +40,67 @@ The architecture is designed so that the camera-processing layer, API layer, act
 ## 🏗️ System Architecture
 
 ```mermaid
-flowchart TB
+flowchart LR
 
-    CAM["🎥 Camera Sources<br/>Laptop Camera • External Camera"]
+    CAM["🎥 Camera Sources<br/>Laptop • External"]
 
-    subgraph CV["🧠 Computer Vision Pipeline"]
+    subgraph CV["🧠 COMPUTER VISION"]
         CAP["Frame Capture"]
-        MOT["Motion Detection"]
-        YOLO["YOLO Person Detection"]
+        YOLO["YOLO Detection"]
         TRACK["Object Tracking"]
-        ZONE["Intrusion Zone Analysis"]
+        CAP --> YOLO --> TRACK
+    end
+
+    subgraph ANALYSIS["🔎 ANALYSIS"]
+        MOT["Motion Detection"]
+        ZONE["Intrusion Detection"]
         LOITER["Loitering Detection"]
-        HEAT["Heatmap Generation"]
+        HEAT["Heatmap"]
+        TRACK --> ZONE
+        TRACK --> LOITER
+        TRACK --> HEAT
     end
 
-    subgraph EVENTS["🚨 Event Processing"]
-        ENGINE["Event Detection Engine"]
-        RECORD["🎬 Automated Recording"]
-        SNAP["📸 Snapshot Capture"]
-        ALERT["📱 Telegram Alerts"]
-        LOG["🗃️ Activity Logger"]
+    subgraph EVENTS["🚨 EVENT ENGINE"]
+        ENGINE["Event Detection"]
+        RECORD["🎬 Record"]
+        SNAP["📸 Snapshot"]
+        ALERT["📱 Telegram"]
+        LOG["🗃️ Activity Log"]
+
+        ENGINE --> RECORD
+        ENGINE --> SNAP
+        ENGINE --> ALERT
+        ENGINE --> LOG
     end
 
-    subgraph BACKEND["⚙️ Backend"]
-        STATE["Shared Camera State"]
-        API["Flask REST API"]
-        STREAM["Live MJPEG Streams"]
-        DB[("SQLite Database")]
+    subgraph BACKEND["⚙️ BACKEND"]
+        STATE["Shared State"]
+        API["Flask API"]
+        STREAM["MJPEG Stream"]
+        DB[("SQLite")]
     end
 
-    subgraph DASHBOARD["🖥️ Web Dashboard"]
-        UI["Real-Time Monitoring UI"]
-        STATUS["Camera & Detection Status"]
-        EVENTS_UI["Event History"]
-        FULL["Fullscreen Camera View"]
-    end
+    DASH["🖥️ Web Dashboard"]
 
     CAM --> CAP
 
     CAP --> MOT
-    CAP --> YOLO
-
-    YOLO --> TRACK
-
-    TRACK --> ZONE
-    TRACK --> LOITER
-    TRACK --> HEAT
-
     MOT --> ENGINE
     ZONE --> ENGINE
     LOITER --> ENGINE
 
-    ENGINE --> RECORD
-    ENGINE --> SNAP
-    ENGINE --> ALERT
-    ENGINE --> LOG
-
-    LOG --> DB
-
-    MOT --> STATE
     YOLO --> STATE
     TRACK --> STATE
-    ZONE --> STATE
-    LOITER --> STATE
+    MOT --> STATE
     RECORD --> STATE
 
+    LOG --> DB
     STATE --> API
     STATE --> STREAM
 
-    API --> UI
-    STREAM --> UI
-
-    UI --> STATUS
-    UI --> EVENTS_UI
-    UI --> FULL
+    API --> DASH
+    STREAM --> DASH
 ```
 
 ### 🔄 Processing Pipeline
