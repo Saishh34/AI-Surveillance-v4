@@ -12,17 +12,6 @@
 
 ---
 
-# AI Surveillance System
-
-> Real-time AI-powered multi-camera surveillance system with person detection, intrusion monitoring, loitering detection, automated recording, Telegram alerts, activity logging, and a web-based monitoring dashboard.
-
-<p align="center">
-
-**YOLO • OpenCV • Python • Flask • SQLite • JavaScript**
-
-</p>
-
----
 
 ## 🚨 Overview
 
