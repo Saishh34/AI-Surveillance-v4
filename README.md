@@ -20,18 +20,18 @@ The system combines AI-based person detection, object tracking, intrusion-zone m
 
 ### What it does
 
--  **Multi-Camera Monitoring** — Monitor multiple cameras simultaneously.
--  **AI Person Detection** — Detect people in real time using YOLO.
--  **Object Tracking** — Track detected people across frames.
--  **Intrusion Detection** — Detect when a person enters a configured restricted zone.
--  **Loitering Detection** — Identify people remaining in an area for an unusual duration.
--  **Automated Recording** — Automatically record relevant detection events.
--  **Snapshots** — Capture frames during important events.
--  **Telegram Alerts** — Send real-time surveillance notifications.
--  **Activity Logging** — Persist intrusion events using SQLite.
--  **Anomaly Detection** — Compare activity against historical time-of-day patterns.
--  **Web Dashboard** — Monitor camera status, detections, recordings, and events in real time.
--  **Heatmap Visualization** — Visualize spatial activity within camera feeds.
+1.  **Multi-Camera Monitoring** — Monitor multiple cameras simultaneously.
+2.  **AI Person Detection** — Detect people in real time using YOLO.
+3.  **Object Tracking** — Track detected people across frames.
+4.  **Intrusion Detection** — Detect when a person enters a configured restricted zone.
+5.  **Loitering Detection** — Identify people remaining in an area for an unusual duration.
+6.  **Automated Recording** — Automatically record relevant detection events.
+7.  **Snapshots** — Capture frames during important events.
+8.  **Telegram Alerts** — Send real-time surveillance notifications.
+9.  **Activity Logging** — Persist intrusion events using SQLite.
+10. **Anomaly Detection** — Compare activity against historical time-of-day patterns.
+11. **Web Dashboard** — Monitor camera status, detections, recordings, and events in real time.
+12. **Heatmap Visualization** — Visualize spatial activity within camera feeds.
 
 The architecture is designed so that the camera-processing layer, API layer, activity logging system, and dashboard remain separated, making the system easier to extend with additional cameras and detection capabilities.
 
